@@ -115,6 +115,7 @@ if __name__ == '__main__':
 		except:
 			print("Fail to read csv file")
 			pass
+
 	for i in range(4):
 		if (i == 3):
 			print("To retry, relaunch the program")
@@ -125,7 +126,17 @@ if __name__ == '__main__':
 			break
 		except:
 			print("Invalid value")
-	
+
+	for i in range(4):
+		if (i == 3):
+			print("To retry, relaunch the program")
+			exit(1)
+		try:
+			value = int(input("Value to use for prediction: "))
+			break
+		except:
+			print("Invalid value")
+
 	theta0 = 0
 	theta1 = 0
 	x = np.array(data[data.columns.values[0]]).reshape(-1, 1)
@@ -134,7 +145,7 @@ if __name__ == '__main__':
 	yNorm = normalizer(y, y).reshape(-1, 1)
 	theta = np.array([[0.],[0.]])
 	theta = fit(xNorm, yNorm, theta, learningRate, iteration)
-	print("Theta after training on normalized dataset is :", theta)
+	valueNorm = normalizer(np.array([value]), x)[0]
+	prediction = theta0 + theta1 * value
+	print("Result of the prediction : ", denormalizer(np.array([prediction]), y)[0])
 	plot(x, y, xNorm, yNorm, theta, xlabel=data.columns.values[0], ylabel=data.columns.values[1])
-	print(predict(xNorm, theta)[0])
-	print(denormalizer(predict(xNorm, theta), y)[0])

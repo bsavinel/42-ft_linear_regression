@@ -4,6 +4,8 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+POSIBILITY_NORMALIZED = False
+
 #!############################################################################################!#
 #!########################################  Function  ########################################!#
 #!############################################################################################!#
@@ -52,52 +54,68 @@ def normalizer(x, list1):
 #!####################################################################################################!#
 
 if __name__ == '__main__':
-	for i in range(4):
-		if (i == 3):
-			print("To retry, relaunch the program")
-			exit(1)
-		try:
-			isNormalised = input("\nDo you want use on normalize dataset ?(Y/N) ").capitalize()
-			if (isNormalised != "Y" and isNormalised != "N"):
-				raise ValueError
-			break
-		except:
-			print("Invalid value")
-
-	if (isNormalised == "Y"):
+	if (not POSIBILITY_NORMALIZED):
 		for i in range(4):
 			if (i == 3):
 				print("To retry, relaunch the program")
 				exit(1)
 			try:
-				file = str(input("\nFile name: "))
-				if (isinstance(file, str) and file.endswith(".csv")):
-					print("Try to read csv file...")
-					data = pd.read_csv(file)
-					print("csv file is good")
-					break
-				print("Invalid file name, please give a csv file")
+				theta0 = float(input("\ntheta0: "))
+				theta1 = float(input("theta1: "))
+				value = int(input("value: "))
+				break
 			except:
 				print("Invalid value")
 
-	for i in range(4):
-		if (i == 3):
-			print("To retry, relaunch the program")
-			exit(1)
-		try:
-			theta0 = float(input("\ntheta0: "))
-			theta1 = float(input("theta1: "))
-			value = int(input("value: "))
-			break
-		except:
-			print("Invalid value")
-
-	if (isNormalised == "N"):
 		print("Result of the prediction : ", theta0 + theta1 * value)
-	else:
-		y = np.array(data[data.columns.values[1]]).reshape(-1, 1)
-		x = np.array(data[data.columns.values[0]]).reshape(-1, 1)
-		value = normalizer(np.array([value]), x)
-		pred = np.array([[theta0 + theta1 * value[0]]])
-		print(pred[0])
-		print("Result of the prediction : ", denormalizer(pred, y)[0])
+
+	else :
+		for i in range(4):
+			if (i == 3):
+				print("To retry, relaunch the program")
+				exit(1)
+			try:
+				theta0 = float(input("\ntheta0: "))
+				theta1 = float(input("theta1: "))
+				value = int(input("value: "))
+				break
+			except:
+				print("Invalid value")
+
+		for i in range(4):
+			if (i == 3):
+				print("To retry, relaunch the program")
+				exit(1)
+			try:
+				isNormalised = input("\nDo you want use on normalize dataset ?(Y/N) ").capitalize()
+				if (isNormalised != "Y" and isNormalised != "N"):
+					raise ValueError
+				break
+			except:
+				print("Invalid value")
+
+		if (isNormalised == "Y"):
+			for i in range(4):
+				if (i == 3):
+					print("To retry, relaunch the program")
+					exit(1)
+				try:
+					file = str(input("\nFile name: "))
+					if (isinstance(file, str) and file.endswith(".csv")):
+						print("Try to read csv file...")
+						data = pd.read_csv(file)
+						print("csv file is good")
+						break
+					print("Invalid file name, please give a csv file")
+				except:
+					print("Invalid value")
+
+		if (isNormalised == "N"):
+			print("Result of the prediction : ", theta0 + theta1 * value)
+		else:
+			y = np.array(data[data.columns.values[1]]).reshape(-1, 1)
+			x = np.array(data[data.columns.values[0]]).reshape(-1, 1)
+			value = normalizer(np.array([value]), x)
+			pred = np.array([[theta0 + theta1 * value[0]]])
+			print(pred[0])
+			print("Result of the prediction : ", denormalizer(pred, y)[0])

@@ -2,8 +2,8 @@ print("precision.py file loading...")
 
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 from math import sqrt
+from tqdm import tqdm
 
 #!############################################################################################!#
 #!########################################  Function  ########################################!#
@@ -53,6 +53,29 @@ def denormalizer(x, list1):
 	max = np.max(list1)
 	return Xcopy * (max - min) + min
 
+def simple_gradient(x, y, theta):
+	if (not check_matrix(x, -1, 1) or not check_matrix(y, x.shape[0], 1) or not check_matrix(theta, 2, 1)):
+		return None
+	copyX = np.insert(x, 0, 1, axis=1)
+	transpX = copyX.transpose()
+	return (transpX @ (copyX @ theta - y)) / x.shape[0]
+
+def ft_progress(lst):
+    with tqdm(
+        lst, 
+        bar_format="ETA: {remaining_s:.2f}s [{percentage:3.0f}%][{bar}] {n_fmt}/{total_fmt} | elapsed time {elapsed_s:.2f}s"
+    ) as progress:
+        for i in progress:
+            yield i
+
+def fit(x, y, theta, alpha, max_iter):
+	if (not check_matrix(x, -1, 1) or not check_matrix(y, x.shape[0], 1) or not check_matrix(theta, 2, 1)):
+		return None
+	copyTheta = theta.copy()
+	for i in ft_progress(range(max_iter)):
+		copyTheta = copyTheta - (alpha * simple_gradient(x, y, copyTheta))
+	return copyTheta
+
 def mse(y, y_hat):
 	if (not check_matrix(y, -1, -1, 1) or not check_matrix(y_hat, y.shape[0], -1, 1)):
 		return None
@@ -100,35 +123,30 @@ if __name__ == '__main__':
 			print("To retry, relaunch the program")
 			exit(1)
 		try:
-			isNormalised = input("\nDo you want use on normalize dataset ?(Y/N) ").capitalize()
-			if (isNormalised != "Y" and isNormalised != "N"):
-				raise ValueError
+			learningRate = float(input("learningRate for normalized dataset: "))
+			iteration = int(input("iteration: "))
 			break
 		except:
 			print("Invalid value")
 
-	for i in range(4):
-		if (i == 3):
-			print("To retry, relaunch the program")
-			exit(1)
-		try:
-			theta0 = float(input("\ntheta0 for normalized dataset: "))
-			theta1 = float(input("theta1 for normalized dataset: "))
-		except:
-			print("Invalid value")
-	
+	theta0 = 0
+	theta1 = 0
 	x = np.array(data[data.columns.values[0]]).reshape(-1, 1)
-	y = np.array(data[data.columns.values[1]])
-	xUse = x
-	yUse = y
-	if (isNormalised == "Y"):
-		xUse = normalizer(x, x)
-		yUse = normalizer(y, y)
-	theta = np.array([[theta0],[theta1]])
-	prediction =  predict(x, theta)
-	if (isNormalised == "Y"):
-		prediction = denormalizer(prediction, y)
+	y = np.array(data[data.columns.values[1]]).reshape(-1, 1)
+	xNorm = normalizer(x, x).reshape(-1, 1)
+	yNorm = normalizer(y, y).reshape(-1, 1)
+	theta = np.array([[0.],[0.]])
+	theta = fit(xNorm, yNorm, theta, learningRate, iteration)
+	prediction = predict(x, theta)
+	prediction = denormalizer(prediction, y)
+	y = y.reshape(-1)
+	yNorm = yNorm.reshape(-1)
+	predictionNorm = normalizer(prediction, y)
 	print("\nThe mse of the model :", mse(y, prediction))
-	print("\nThe rmse of the model :", rmse(y, prediction))
-	print("\nThe mae of the model :", mae(y, prediction))
-	print("\nThe r2score of the model :", r2score(y, prediction))
+	print("The rmse of the model :", rmse(y, prediction))
+	print("The mae of the model :", mae(y, prediction))
+	print("The r2score of the model :", r2score(y, prediction))
+	print("\nThe mse of the model normalized :", mse(yNorm, predictionNorm))
+	print("The rmse of the model normalized :", rmse(yNorm, predictionNorm))
+	print("The mae of the model normalized :", mae(yNorm, predictionNorm))
+	print("The r2score of the model normalized :", r2score(yNorm, predictionNorm))
