@@ -3,15 +3,22 @@ import pandas as pd
 from utils import loadTheta
 from linear_regraision import predict, mae, mse, rmse, r2score
 
+print("This programe will give the precision(mse, rmse, mae and r2score) of the model in function of a csv file")
+
 for i in range(4):
 	if (i == 3):
 		print("To retry, relaunch the program")
 		exit(1)
 	try:
-		file = str(input("\nFile name: "))
+		file = str(input("\nFile name : "))
 		if (isinstance(file, str) and file.endswith(".csv")):
 			print("Try to read csv file...")
 			data = pd.read_csv(file)
+			x = np.array(data["km"]).reshape(-1, 1)
+			y = np.array(data["price"]).reshape(-1)
+			if (len(x) == 1):
+				print("Dataset size is too small, please give a bigger")
+				continue
 			print("csv file is good")
 			break
 		print("Invalid file name, please give a csv file")
@@ -19,8 +26,6 @@ for i in range(4):
 		print("Fail to read csv file")
 		pass
 
-x = np.array(data[data.columns.values[0]]).reshape(-1, 1)
-y = np.array(data[data.columns.values[1]]).reshape(-1, 1).reshape(-1)
 theta = loadTheta()
 prediction = predict(x, theta).reshape(-1)
 
