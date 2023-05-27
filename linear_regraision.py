@@ -1,7 +1,7 @@
 import numpy as np
 from math import sqrt
 import matplotlib.pyplot as plt
-from utils import check_matrix, ft_progress, updateTheta
+from utils import check_matrix, ft_progress
 
 #!############################################################################################!#
 #!#######################################  Prediction  #######################################!#
@@ -27,18 +27,12 @@ def simple_gradient(x, y, theta):
 	transpX = copyX.transpose()
 	return (transpX @ (copyX @ theta - y)) / x.shape[0]
 
-def fit(x, y, theta, alpha, max_iter, x_norm=None, y_norm=None):
+def fit(x, y, theta, alpha, max_iter):
 	if (not check_matrix(x, -1, 1) or not check_matrix(y, x.shape[0], 1) or not check_matrix(theta, 2, 1)):
 		return None
-	if (x_norm is not None):
-		x_norm = x
-	if (y_norm is not None):
-		y_norm = y
-
 	copyTheta = theta.copy()
 	for i in ft_progress(range(max_iter)):
-		copyTheta = copyTheta - (alpha * simple_gradient(x_norm, y_norm, copyTheta))
-		updateTheta(copyTheta, x, y, predict(x, copyTheta))
+		copyTheta = copyTheta - (alpha * simple_gradient(x, y, copyTheta))
 	return copyTheta
 
 #!#########################################################################################!#

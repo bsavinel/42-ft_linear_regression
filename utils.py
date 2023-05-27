@@ -51,12 +51,12 @@ def denormalizer(x, list1):
 	max = np.max(list1)
 	return Xcopy * (max - min) + min
 
-def deNormTheta(theta, valx, valy):
-	if (not check_matrix(theta, 2, 1) or not check_matrix(valx, -1, 1) or not check_matrix(valy, -1, 1)):
+def deNormTheta(valx, valy):
+	if (not check_matrix(valx, -1, 1) or not check_matrix(valy, -1, 1)):
 		return None
 	ret = np.zeros((2, 1))
-	ret[1] = (valy[0] - valy[1]) / (valx[0] - valx[1])
-	ret[0] = valy[0] - (ret[1] * valx[0])
+	ret[1] = (valy[0][0] - valy[1][0]) / (valx[0][0] - valx[1][0])
+	ret[0] = valy[0][0] - (ret[1] * valx[0][0])
 	return ret
 
 #!#########################################################################################!#
@@ -80,8 +80,3 @@ def loadTheta():
 	except:
 		storeTheta(np.zeros((2, 1)))
 		return np.zeros((2, 1))
-	
-def updateTheta(theta, x, y, pred):
-	predUnnorm = denormalizer(pred, y)
-	storeTheta = deNormTheta(theta, x, predUnnorm)
-	storeTheta = storeTheta(storeTheta)
