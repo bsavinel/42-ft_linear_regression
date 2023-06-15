@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 from utils import loadTheta
-from linear_regraision import predict, mae, mse, rmse, r2score, data_spliter
+from linear_regression import predict, mae, mse, rmse, r2score, data_spliter
 
 print("This programe will give the precision(mse, rmse, mae and r2score) of the model in function of a csv file")
 

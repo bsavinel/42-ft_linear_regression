@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 from utils import  normalizer, denormalizer, deNormTheta, storeTheta
-from linear_regraision import fit, plot, predict, data_spliter
+from linear_regression import fit, plot, predict, data_spliter
 
 print("This programe train a model to give the price of a car in function of its mileage")
 
