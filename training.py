@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 from utils import  normalizer, denormalizer, deNormTheta, storeTheta
-from linear_regraision import fit, plot, predict
+from linear_regraision import fit, plot, predict, data_spliter
 
 print("This programe train a model to give the price of a car in function of its mileage")
 
@@ -33,16 +33,20 @@ for i in range(4):
 		learningRate = float(input("learningRate for normalized dataset : "))
 		iteration = int(input("iteration : "))
 		value = int(input("Mileage for prediction : "))
+		seed = int(input("Seed : "))
 		break
 	except:
 		print("Invalid value")
 
+
 xNorm = normalizer(x, x).reshape(-1, 1)
 yNorm = normalizer(y, y).reshape(-1, 1)
+xNormTrain, xNormEval, yNormTrain, yNormEval = data_spliter(xNorm, yNorm, 0.8, seed)
+
 theta = np.zeros((2, 1))
-theta = fit(xNorm, yNorm, theta, learningRate, iteration)
-pred = denormalizer(predict(xNorm, theta), y).reshape(-1, 1)
-newTheta = deNormTheta(x, pred)
+theta = fit(xNormTrain, yNormTrain, theta, learningRate, iteration)
+pred = denormalizer(predict(xNormEval, theta), y).reshape(-1, 1)
+newTheta = deNormTheta(denormalizer(xNormEval, x).reshape(-1, 1), pred)
 storeTheta(newTheta)
 prediction = newTheta[0][0] + (newTheta[1][0] * value)
 print("The estimate price is : ", prediction)

@@ -60,6 +60,24 @@ def r2score(y, y_hat):
 		return None
 	return 1 - (sum((y_hat - y) ** 2) / sum((y - y.mean()) ** 2))
 
+#!##########################################################################################!#
+#!######################################  Data split  ######################################!#
+#!##########################################################################################!#
+
+def unison_shuffled_copies(a, b, seed):
+	if (len(a) != len(b) or len(a) == 0):
+		return None
+	np.random.seed(seed)
+	p = np.random.permutation(len(a))
+	return a[p], b[p]
+
+def data_spliter(x, y, proportion, seed):
+	if (not check_matrix(x, -1, -1) or not check_matrix(y, x.shape[0], 1) or proportion > 1 or proportion < 0 or not isinstance(seed, int)):
+		return None
+	index_prop = int(x.shape[0] * proportion)
+	copyX, copyY = unison_shuffled_copies(x, y, seed)
+	return (copyX[:index_prop], copyX[index_prop:], copyY[:index_prop], copyY[index_prop:])
+
 #!#############################################################################################!#
 #!######################################  Visualisation  ######################################!#
 #!#############################################################################################!#
